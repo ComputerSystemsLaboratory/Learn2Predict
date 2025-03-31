@@ -1,0 +1,7 @@
+-f data/bcsstk30.mtx.1.mtx
+-f data/bcsstk30.mtx.2.mtx
+-f data/bcsstk30.mtx.3.mtx
+-f data/bcsstk30.mtx.4.mtx
+-f data/bcsstk30.mtx.5.mtx
+-f data/bcsstk30.mtx.6.mtx
+

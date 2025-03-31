@@ -1,0 +1,6 @@
+-i 786432 -b 256 -f input/image_VanHateren.iml
+-i 1572864 -b 256 -f input/image_VanHateren.iml
+-i 3145728 -b 256 -f input/image_VanHateren.iml
+-i 6291456 -b 256 -f input/image_VanHateren.iml
+-i 12582912 -b 256 -f input/image_VanHateren.iml
+

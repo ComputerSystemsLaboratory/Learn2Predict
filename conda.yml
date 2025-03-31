@@ -1,0 +1,47 @@
+name: l2p
+channels:
+  - pytorch
+  - defaults
+  - anaconda
+  - conda-forge
+  - bioconda
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.10
+  - cuda=12.2.2
+  - cuda-tools=12.2.2
+  - cuda-toolkit=12.2.2
+  - cuda-version=12.2
+  - cuda-command-line-tools=12.2.2 
+  - cuda-compiler=12.2.2 
+  - cuda-runtime=12.2.2
+  - gawk
+  - graphviz
+  - py-lief
+  - capstone
+  - automake
+  - cmake
+  - dgl
+  - pytorch-gpu
+  - tensorflow-gpu
+  - pytorch_scatter 
+  - pytorch_sparse 
+  - pytorch_geometric
+  - setuptools=69.5.1
+  - pip
+  - pip:
+    - absl-py
+    - appdirs
+    - numpy
+    - pandas
+    - pytest
+    - pygraphviz
+    - pyaml
+    - typing-extensions
+    - scikit-learn
+    - sympy
+    - seaborn
+    - matplot
+    - skorch
+    - transformers
