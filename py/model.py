@@ -573,22 +573,22 @@ def train_and_predict(
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)  # Optimizer for training  
 
     # Train the model using the train in batches function 
-    model, history, train_wallclock, train_cputime = train_in_batches(  
-                                                        model,   
-                                                        X_train,   
-                                                        y_train,   
-                                                        X_val,   
-                                                        y_val,   
-                                                        optimizer,   
-                                                        criterion,  
-                                                        num_epochs=num_epochs,   
-                                                        use_patience=use_patience,   
-                                                        patience=patience,  
-                                                        model_dir=model_dir,   
-                                                        model_name=model_name,   
-                                                        save_model=save_model,  
-                                                        batch_size=batch_size,
-                                                        multi_objective=True if y_train.shape[1] > 1 else False
+    model, history, training_wallclock, training_cputime = train_in_batches(  
+                                                                model,   
+                                                                X_train,   
+                                                                y_train,   
+                                                                X_val,   
+                                                                y_val,   
+                                                                optimizer,   
+                                                                criterion,  
+                                                                num_epochs=num_epochs,   
+                                                                use_patience=use_patience,   
+                                                                patience=patience,  
+                                                                model_dir=model_dir,   
+                                                                model_name=model_name,   
+                                                                save_model=save_model,  
+                                                                batch_size=batch_size,
+                                                                multi_objective=True if y_train.shape[1] > 1 else False
     )  
 
     # Evaluation on the test set (if test_size > 0.0)  
@@ -606,20 +606,21 @@ def train_and_predict(
             predictions = outputs.cpu().numpy()  # Convert predictions back to numpy array  
     
         # Stop timing for evaluation  
-        test_wallclock = time.perf_counter() - wallclock_start   
-        test_cputime = time.process_time() - cputime_start  
+        prediction_wallclock = time.perf_counter() - wallclock_start   
+        prediction_cputime = time.process_time() - cputime_start
+        y_test = y_test.cpu()
     else:  
         predictions = None  
-        test_wallclock, test_cputime = 0.0, 0.0  
+        prediction_wallclock, prediction_cputime = 0.0, 0.0  
 
     elapsed_time = {  
-        "train_wallclock": train_wallclock,  
-        "train_cputime": train_cputime,  
-        "test_wallclock": test_wallclock,  
-        "test_cputime": test_cputime  
+        "training_wallclock": training_wallclock,  
+        "training_cputime": training_cputime,  
+        "prediction_wallclock": prediction_wallclock,  
+        "prediction_cputime": prediction_cputime  
     }  
 
-    return y_test.cpu(), predictions, history, elapsed_time  # Return predictions, metrics, and training history  
+    return y_test, predictions, history, elapsed_time  # Return predictions, metrics, and training history  
 
 
 def predict_with_pretrained_model(
@@ -756,22 +757,22 @@ def predict_with_pretrained_model(
         criterion = torch.nn.MSELoss()  
 
         # Train the model on GPU (or CPU if not available)  
-        model, history, train_wallclock, train_cputime = train_in_batches(  
-                                                            model, 
-                                                            X_train, 
-                                                            y_train, 
-                                                            X_val, 
-                                                            y_val, 
-                                                            optimizer, 
-                                                            criterion,  
-                                                            num_epochs=num_epochs, 
-                                                            use_patience=use_patience, 
-                                                            patience=patience,  
-                                                            model_dir=model_dir, 
-                                                            model_name=model_name, 
-                                                            save_model=save_model,
-                                                            batch_size=batch_size,
-                                                            multi_objective=True if y_train.shape[1] > 1 else False
+        model, history, finetuning_wallclock, finetuning_cputime = train_in_batches(  
+                                                                        model, 
+                                                                        X_train, 
+                                                                        y_train, 
+                                                                        X_val, 
+                                                                        y_val, 
+                                                                        optimizer, 
+                                                                        criterion,  
+                                                                        num_epochs=num_epochs, 
+                                                                        use_patience=use_patience, 
+                                                                        patience=patience,  
+                                                                        model_dir=model_dir, 
+                                                                        model_name=model_name, 
+                                                                        save_model=save_model,
+                                                                        batch_size=batch_size,
+                                                                        multi_objective=True if y_train.shape[1] > 1 else False
         )  
     else:  
         # Use the entire dataset for testing  
@@ -792,14 +793,14 @@ def predict_with_pretrained_model(
         predictions = outputs.cpu().numpy()  # Move the outputs to CPU and convert to numpy  
     
     # Stop instrumentation  
-    test_wallclock = time.perf_counter() - wallclock_start   
-    test_cputime = time.process_time() - cputime_start 
+    prediction_wallclock = time.perf_counter() - wallclock_start   
+    prediction_cputime = time.process_time() - cputime_start 
 
     elapsed_time = {  
-        "train_wallclock": train_wallclock,  
-        "train_cputime": train_cputime,  
-        "test_wallclock": test_wallclock,  
-        "test_cputime": test_cputime  
+        "finetuning_wallclock": finetuning_wallclock,  
+        "finetuning_cputime": finetuning_cputime,  
+        "prediction_wallclock": prediction_wallclock,  
+        "prediction_cputime": prediction_cputime  
     }  
 
     return y_test.cpu(), predictions, history, elapsed_time  # Return predictions and metrics  

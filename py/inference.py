@@ -26,17 +26,13 @@ from utils import metrics_for_predictions
 FLAGS = flags.FLAGS
 
 flags.DEFINE_list(
-    'test_benchmarks',
+    'inference_benchmarks',
     default=[
             'BFS',
             'BS',
             'GEMV',
             'HST-L',
             'HST-S',
-            'LiRnQ',
-            'LiRQ',
-            'LoRnQ',
-            'LoRQ',
             'MLP',
             'RED',
             'SCAN-RSS',
@@ -51,7 +47,7 @@ flags.DEFINE_list(
 
 flags.DEFINE_enum(
     'transformation',
-    default='original',
+    default='log',
     enum_values=[
                 'original',
                 'sqrt',
@@ -72,7 +68,7 @@ flags.DEFINE_list(
     help='List of columns to exclude from features'
 )
 
-flags.DEFINE_string(
+flags.DEFINE_list(
     'target_column',
     default=None,
     help='Column to use as the target (y)'
@@ -222,7 +218,7 @@ def main(
     os.makedirs(FLAGS.output_dir, exist_ok=True)
 
     dataframes = []  # List to store individual DataFrames  
-    for benchmark in FLAGS.test_benchmarks:  
+    for benchmark in FLAGS.inference_benchmarks:  
         # Validate file existence and extension 
         file_name = os.path.join(FLAGS.dataset_dir, f"{benchmark}.csv")
         if not os.path.exists(file_name):  
@@ -249,7 +245,7 @@ def main(
 
     y_test, predictions, history, elapsed_time = predict_with_pretrained_model(  
                                                     new_data,
-                                                    target_column=FLAGS.target_column,
+                                                    target_column=target_column,
                                                     hidden_size=FLAGS.hidden_size,  
                                                     output_size=len(FLAGS.target_column),
                                                     learning_rate=FLAGS.learning_rate*FLAGS.learning_rate_reduction,

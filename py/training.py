@@ -27,30 +27,17 @@ FLAGS = flags.FLAGS
 flags.DEFINE_list(
     'training_benchmarks',
     default=[
-            'BFS',
-            'BS',
-            'GEMV',
-            'HST-L',
-            'HST-S',
             'LiRnQ',
             'LiRQ',
             'LoRnQ',
-            'LoRQ',
-            'MLP',
-            'RED',
-            'SCAN-RSS',
-            'SCAN-SSA',
-            'SpMV',
-            'TRNS',
-            'TS',
-            'VA'
+            'LoRQ'
     ],
     help='Training benchmarks'
 )
 
 flags.DEFINE_enum(
     'transformation',
-    default='original',
+    default='log',
     enum_values=[
                 'original',
                 'sqrt',

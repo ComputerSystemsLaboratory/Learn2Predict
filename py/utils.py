@@ -369,8 +369,8 @@ def preprocess_dataset(
         logging.error(f"The following target columns are not in the DataFrame: {invalid_targets}")  
         exit(1)
 
-    if isinstance(columns_to_exclude, list):
-        logging.error("'columns_to_exclude_column' must be a list.") 
+    if not isinstance(columns_to_exclude, list):
+        logging.error("'columns_to_exclude' must be a list.") 
         exit(1)
 
     # Check for invalid columns in columns_to_exclude  

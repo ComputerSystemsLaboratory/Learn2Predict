@@ -48,6 +48,23 @@ flags.DEFINE_list(
     help='List of metrics to display on Predictions Plot'
 )
 
+flags.DEFINE_boolean(
+    'plot_history',
+    default=True,
+    help='Plot training history'
+)
+
+flags.DEFINE_boolean(
+    'plot_predictions',
+    default=False,
+    help='Plot predictions'
+)
+
+flags.DEFINE_boolean(
+    'plot_residuals',
+    default=False,
+    help='Plot residuals'
+)
 
 # -------------------------------------------------
 # Main routine
@@ -56,46 +73,57 @@ def main(
     argv
 ):
 
-    if not os.path.isfile(FLAGS.predictions):
-        logging.error(f"File does not exist: {FLAGS.predictions}")
-        return
-
-    if not os.path.isfile(FLAGS.history):
-        logging.error(f"File does not exist: {FLAGS.history}")
-        return
-
     os.makedirs(FLAGS.output_dir, exist_ok=True)
 
-    with open(FLAGS.history, 'r', encoding='utf-8') as yml_file:
-        history = yl.safe_load(yml_file)
+    if FLAGS.plot_history:
+        if not os.path.isfile(FLAGS.history):
+            logging.error(f"File does not exist: {FLAGS.history}")
+            return
 
-    if not history:
-        logging.error(f"History does not exist.")
-        return
+        with open(FLAGS.history, 'r', encoding='utf-8') as yml_file:
+            history = yl.safe_load(yml_file)
 
-    predictions = np.load(FLAGS.predictions)
-    y_test = predictions['y_test']
-    y_pred = predictions['y_pred']
+        if not history:
+            logging.error(f"History does not exist.")
+            return
 
+        plot_training_history(
+            history,
+            FLAGS.output_dir
+        ) 
 
-    plot_training_history(
-        history,
-        FLAGS.output_dir
-    ) 
+    if FLAGS.plot_predictions:
+        if not os.path.isfile(FLAGS.predictions):
+            logging.error(f"File does not exist: {FLAGS.predictions}")
+            return
 
-    plot_predictions_scatter(
-        y_test, 
-        y_pred,
-        FLAGS.target,
-        FLAGS.show_metrics,
-        FLAGS.output_dir
-    )
+        predictions = np.load(FLAGS.predictions)
+        y_test = predictions['y_test']
+        y_pred = predictions['y_pred']
 
-    plot_residuals(
-        y_test, 
-        y_pred, 
-        FLAGS.output_dir
-    )
+        plot_predictions_scatter(
+            y_test, 
+            y_pred,
+            FLAGS.target,
+            FLAGS.show_metrics,
+            FLAGS.output_dir
+        )
+
+    if FLAGS.plot_residuals:
+        if not os.path.isfile(FLAGS.predictions):
+            logging.error(f"File does not exist: {FLAGS.predictions}")
+            return
+
+        predictions = np.load(FLAGS.predictions)
+        y_test = predictions['y_test']
+        y_pred = predictions['y_pred']
+
+        plot_residuals(
+            y_test, 
+            y_pred, 
+            FLAGS.output_dir
+        )
+
 
 if __name__ == '__main__':
     app.run(main)
