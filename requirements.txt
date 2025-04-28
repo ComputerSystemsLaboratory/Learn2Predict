@@ -4,9 +4,9 @@ capstone
 dgl
 numpy
 pandas
-py-lief
+lief
 pytest
-pytorch
+torch
 pygraphviz
 pyaml
 typing-extensions
